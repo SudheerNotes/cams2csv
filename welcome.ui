@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>749</width>
+    <height>437</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="wd_main" native="true">
+   <property name="geometry">
+    <rect>
+     <x>-20</x>
+     <y>-10</y>
+     <width>781</width>
+     <height>451</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget#wd_main{
+background-color: qlineargradient(spread:pad, x1:0.184, y1:0.142136, x2:0.907, y2:0.92, stop:0 rgba(26, 95, 180, 255), stop:0.837838 rgba(97, 53, 131, 255));}</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>30</y>
+      <width>201</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 400 36pt &quot;Fira Sans&quot;;
+color: rgb(255, 255, 255);
+</string>
+    </property>
+    <property name="text">
+     <string>Welcome</string>
+    </property>
+    <property name="indent">
+     <number>0</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>100</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 13pt &quot;Fira Sans&quot;;
+color: rgb(192, 191, 188);
+</string>
+    </property>
+    <property name="text">
+     <string>CAMS to CSV converter</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_submit">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>250</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 7px;
+color: rgb(0, 0, 0);
+font: 300 14pt &quot;Fira Sans&quot;;
+background-color: rgb(153, 193, 241);</string>
+    </property>
+    <property name="text">
+     <string>Submit</string>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_browse">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>180</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="toolTip">
+     <string notr="true"/>
+    </property>
+    <property name="toolTipDuration">
+     <number>-1</number>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">border-radius: 7px;
+color: rgb(0, 0, 0);
+font: 300 14pt &quot;Fira Sans&quot;;
+background-color: rgb(153, 193, 241);</string>
+    </property>
+    <property name="text">
+     <string>Browse</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_path">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>180</y>
+      <width>241</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Fira Sans</family>
+      <pointsize>10</pointsize>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #6f84a6;
+color: rgb(0, 0, 0);
+border-radius: 5px;
+font: 300 10pt &quot;Fira Sans&quot;;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="chk_password">
+    <property name="geometry">
+     <rect>
+      <x>590</x>
+      <y>190</y>
+      <width>101</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 12pt &quot;Fira Sans&quot;;
+color: rgb(222, 221, 218);</string>
+    </property>
+    <property name="text">
+     <string>Password ?</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="le_pwd">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>250</y>
+      <width>241</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: #6f84a6;
+color: rgb(0, 0, 0);
+border-radius: 5px;
+font: 300 10pt &quot;Fira Sans&quot;;</string>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="placeholderText">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lbl_message">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>330</y>
+      <width>331</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 300 10pt &quot;Fira Sans&quot;;
+color: rgb(255, 255, 255);</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
