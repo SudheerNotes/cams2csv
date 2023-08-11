@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog
 import pdfplumber
 import re
 from pandas import DataFrame
+from datetime import datetime
 
 basedir = os.path.dirname(__file__)
 
@@ -55,16 +56,18 @@ class WelcomeScreen(QDialog):
                 self.lbl_message.setText("Process completed, file saved in Downloads folder")
                 self.lbl_path.setText(" ")
                 self.le_pwd.setText(" ")
+                self.chk_password.setChecked(False)
+                
 
             except:
-                self.lbl_message.setText("Protected file...please enter your password")
+                self.lbl_message.setText("Encrypted file, please enter your password")
     
     def extract_text(self,doc_txt):
         
         #Defining RegEx patterns
         folio_pat = re.compile(r"(^Folio No:\s\d+)")  # Extracting Folio information
         fund_name = re.compile(r".+Fund.+\s:") #Extracting Fund Name
-        trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)") # Extracting Transaction data
+        trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)") #Extracting Transaction data
 
         line_itms = []
         for i in doc_txt.splitlines():
@@ -95,8 +98,10 @@ class WelcomeScreen(QDialog):
             df.Units = df.Units.astype('float')
             df.Price = df.Price.astype('float')
             df.Unit_balance = df.Unit_balance.astype('float')
-            
-            save_file = os.path.join(os.path.expanduser('~'),'Downloads','CAMS_data.csv')
+
+
+            file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
+            save_file = os.path.join(os.path.expanduser('~'),'Downloads',file_name)
             df.to_csv(save_file,index=False)
             
 

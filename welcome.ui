@@ -27,7 +27,9 @@
    </property>
    <property name="styleSheet">
     <string notr="true">QWidget#wd_main{
-background-color: qlineargradient(spread:pad, x1:0.184, y1:0.142136, x2:0.907, y2:0.92, stop:0 rgba(26, 95, 180, 255), stop:0.837838 rgba(97, 53, 131, 255));}</string>
+background-color: rgb(8, 30, 85);}
+
+</string>
    </property>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -53,10 +55,10 @@ color: rgb(255, 255, 255);
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>290</x>
       <y>100</y>
-      <width>181</width>
-      <height>16</height>
+      <width>231</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -65,7 +67,7 @@ color: rgb(192, 191, 188);
 </string>
     </property>
     <property name="text">
-     <string>CAMS to CSV converter</string>
+     <string>CAMS PDF to CSV converter</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_submit">
@@ -179,9 +181,9 @@ color: rgb(222, 221, 218);</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background-color: #6f84a6;
-color: rgb(0, 0, 0);
+color: #FFFFFF;
 border-radius: 5px;
-font: 300 10pt &quot;Fira Sans&quot;;</string>
+font: 350 10pt &quot;Fira Sans&quot;;</string>
     </property>
     <property name="inputMask">
      <string/>
@@ -196,9 +198,9 @@ font: 300 10pt &quot;Fira Sans&quot;;</string>
    <widget class="QLabel" name="lbl_message">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>250</x>
       <y>330</y>
-      <width>331</width>
+      <width>351</width>
       <height>31</height>
      </rect>
     </property>
@@ -211,6 +213,22 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>420</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(90, 110, 200);</string>
+    </property>
+    <property name="text">
+     <string>- Sudheer Tammini</string>
     </property>
    </widget>
   </widget>
