@@ -14,6 +14,8 @@ At this stage, I’m supporting both Windows & Linux and the packages can be dow
 
 The UI is very simple and self explanatory.
 
+**Setp 0:** Request CAMS detailed (not summary) Mutual Fund statement from MyCams [link](https://www.camsonline.com/Investors/Statements/Consolidated-Account-Statement)
+
 **Step 1:** Click on `Browse` button and select your CAMS PDF file.
 
 **Step 2:** If your PDF statement is password protected then click on the `Password?` checkbox
@@ -24,4 +26,4 @@ In couple of minutes a CSV file will be saved in your `Downloads` folder.
 
 ### Here is a simple UI of this tool
 
-!['Simple UI'](./img/ui.png)
+!['Simple UI'](/img/ui.png)
