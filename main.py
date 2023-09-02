@@ -12,13 +12,14 @@ basedir = os.path.dirname(__file__)
 class WelcomeScreen(QDialog):
     def __init__(self):
         super(WelcomeScreen,self).__init__()
+
         loadUi("welcome.ui",self)
-        self.le_pwd.setEnabled(False)
         self.btn_browse.clicked.connect(self.file_dailog)
         self.chk_password.toggled.connect(self.enable_pw_input)
         self.btn_submit.clicked.connect(self.file_processing)
 
     def file_dailog(self):
+        self.clear_fields()
         filename,_ = QFileDialog.getOpenFileName(
             parent=self,
             caption='Select your CAMS PDF file',
@@ -30,21 +31,19 @@ class WelcomeScreen(QDialog):
         if self.chk_password.isChecked() == True:
             self.le_pwd.setEnabled(True)
             self.le_pwd.setPlaceholderText("Document Password")
-            self.lbl_message.setText(" ")
-
+            self.lbl_message.clear()
         else:
             self.le_pwd.setEnabled(False)
-            self.le_pwd.setPlaceholderText(" ")
-            self.le_pwd.setText("")
+            self.le_pwd.setPlaceholderText("")
+            self.le_pwd.clear()
 
     def file_processing(self):
+
         file_path = self.lbl_path.text()
         doc_pwd = self.le_pwd.text()
-        
         final_text = ""
-        if len(file_path) == 0:
-            self.lbl_message.setText("Please select your CAMS PDF file..")
-        else:
+        
+        if not len(file_path) == 0:
             try:
                 with pdfplumber.open(file_path,password=doc_pwd) as pdf:
                     for i in range(len(pdf.pages)):
@@ -52,16 +51,13 @@ class WelcomeScreen(QDialog):
                         final_text = final_text + "\n" + txt
                     pdf.close()
 
-                self.extract_text(final_text)    
-                self.lbl_message.setText("Process completed, file saved in Downloads folder")
-                self.lbl_path.setText(" ")
-                self.le_pwd.setText(" ")
-                self.chk_password.setChecked(False)
-                
-
+                self.extract_text(final_text)
+               
             except:
                 self.lbl_message.setText("Encrypted file, please enter your password")
-    
+        else:    
+             self.lbl_message.setText("Please select your CAMS PDF file..")
+        
     def extract_text(self,doc_txt):
         
         #Defining RegEx patterns
@@ -99,23 +95,30 @@ class WelcomeScreen(QDialog):
             df.Price = df.Price.astype('float')
             df.Unit_balance = df.Unit_balance.astype('float')
 
-
             file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
-            save_file = os.path.join(os.path.expanduser('~'),'Downloads',file_name)
-            df.to_csv(save_file,index=False)
-            
+            save_file = os.path.join(os.path.expanduser('~'),'Downloads',file_name)         
 
+            try:
+                df.to_csv(save_file,index=False)
+                self.lbl_message.setText("Process completed, file saved in Downloads folder")
+
+            except Exception as e:
+                self.lbl_message.setText(e)
+             
     def clean_txt(self,x):
         x.replace(r",","",inplace=True,regex=True)
         x.replace("\(","-",regex=True,inplace=True)
         x.replace("\)"," ",regex=True,inplace=True)
         return x
+    
+    def clear_fields(self):
+        self.lbl_message.clear()
+        self.lbl_path.clear()
+        self.chk_password.setChecked(False)
 
 # Main
 app = QApplication(sys.argv)
 widget = WelcomeScreen()
-widget.setFixedHeight(437)
-widget.setFixedWidth(749)
 widget.setWindowTitle(" ")
 widget.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "icons","app_icon.svg")))
 widget.show()

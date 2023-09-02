@@ -111,7 +111,7 @@ color: rgb(192, 191, 188);
     <property name="styleSheet">
      <string notr="true">border-radius: 7px;
 color: rgb(0, 0, 0);
-font: 300 14pt &quot;Fira Sans&quot;;
+font: 300 13pt &quot;Fira Sans&quot;;
 background-color: rgb(153, 193, 241);</string>
     </property>
     <property name="text">
@@ -165,7 +165,7 @@ color: rgb(255, 255, 255);</string>
     <property name="styleSheet">
      <string notr="true">border-radius: 7px;
 color: rgb(0, 0, 0);
-font: 300 14pt &quot;Fira Sans&quot;;
+font: 300 13pt &quot;Fira Sans&quot;;
 background-color: rgb(153, 193, 241);</string>
     </property>
     <property name="text">
