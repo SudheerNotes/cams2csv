@@ -60,9 +60,9 @@ background-color: #081E55;}
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>280</x>
       <y>20</y>
-      <width>201</width>
+      <width>241</width>
       <height>51</height>
      </rect>
     </property>
@@ -81,9 +81,9 @@ color: rgb(255, 255, 255);
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>280</x>
       <y>90</y>
-      <width>211</width>
+      <width>251</width>
       <height>20</height>
      </rect>
     </property>
@@ -253,9 +253,9 @@ font: 350 10pt &quot;Fira Sans&quot;;</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>600</x>
       <y>420</y>
-      <width>151</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
@@ -263,7 +263,7 @@ font: 350 10pt &quot;Fira Sans&quot;;</string>
      <string notr="true">color: rgb(90, 110, 200);</string>
     </property>
     <property name="text">
-     <string>- Sudheer Tammini - v1.01</string>
+     <string>- Sudheer Tammini - v1.2</string>
     </property>
    </widget>
   </widget>
