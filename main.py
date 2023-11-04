@@ -64,7 +64,7 @@ class WelcomeScreen(QDialog):
         # Defining RegEx patterns
         folio_pat = re.compile(
             r"(^Folio No:\s\d+)", flags=re.IGNORECASE)  # Extracting Folio information
-        fund_name = re.compile(r".*ISIN.*", flags=re.IGNORECASE)
+        fund_name = re.compile(r".*[Fund].*ISIN.*", flags=re.IGNORECASE)
         trans_details = re.compile(
             r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
         )  # Extracting Transaction data
