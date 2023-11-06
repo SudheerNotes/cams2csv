@@ -14,7 +14,7 @@ basedir = os.path.dirname(__file__)
 class WelcomeScreen(QDialog):
     def __init__(self):
         super(WelcomeScreen, self).__init__()
-        loadUi("welcome.ui", self)
+        loadUi(os.path.join(basedir,"welcome.ui"), self)
         self.btn_browse.clicked.connect(self.file_dailog)
         self.chk_password.toggled.connect(self.enable_pw_input)
         self.btn_submit.clicked.connect(self.process_thread)
