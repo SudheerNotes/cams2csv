@@ -61,7 +61,7 @@ background-color: #081E55;}
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>30</y>
+      <y>40</y>
       <width>241</width>
       <height>51</height>
      </rect>
@@ -82,7 +82,7 @@ color: rgb(255, 255, 255);
     <property name="geometry">
      <rect>
       <x>280</x>
-      <y>100</y>
+      <y>110</y>
       <width>251</width>
       <height>20</height>
      </rect>
@@ -100,7 +100,7 @@ color: rgb(192, 191, 188);
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>250</y>
+      <y>260</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -125,7 +125,7 @@ background-color: rgb(153, 193, 241);</string>
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>340</y>
+      <y>350</y>
       <width>351</width>
       <height>31</height>
      </rect>
@@ -145,7 +145,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>180</y>
+      <y>190</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -182,7 +182,7 @@ background-color: rgb(153, 193, 241);</string>
     <property name="geometry">
      <rect>
       <x>580</x>
-      <y>190</y>
+      <y>200</y>
       <width>101</width>
       <height>22</height>
      </rect>
@@ -202,7 +202,7 @@ color: rgb(222, 221, 218);</string>
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>180</y>
+      <y>190</y>
       <width>241</width>
       <height>41</height>
      </rect>
@@ -229,7 +229,7 @@ font: 300 10pt &quot;Fira Sans&quot;;</string>
     <property name="geometry">
      <rect>
       <x>300</x>
-      <y>250</y>
+      <y>260</y>
       <width>241</width>
       <height>41</height>
      </rect>
