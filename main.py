@@ -60,22 +60,73 @@ class WelcomeScreen(QDialog):
         else:
             self.lbl_message.setText("Please select your CAMS PDF file..")
 
+
+    def extract_funds_details(self, text):
+        # Regex patterns to extract the required details
+        fund_name_pat = re.compile(r'^(.*?) - ISIN')
+        isin_pat = re.compile(r'ISIN:\s*(\w+)')
+        advisor_pat = re.compile(r'Advisor:\s*(\w+)')
+        registrar_pat = re.compile(r'Registrar :\s*(\w+)')
+
+        # Extract registrar
+        registrar_match = registrar_pat.search(text)
+        registrar = registrar_match.group(1) if registrar_match else None
+        # lets remove registrar first so we can combine multiline text of other values below
+        text = re.sub(r' Registrar :\s*(\w+)\s*', '', text)
+        # Extract fund name
+        fund_name_match = fund_name_pat.search(text)
+        fund_name = fund_name_match.group()[:-7] if fund_name_match else None
+
+        # Extract ISIN
+        isin_match = isin_pat.search(text)
+        isin = isin_match.group(1) if isin_match else None
+
+        # Extract advisor
+        advisor_match = advisor_pat.search(text)
+        advisor = advisor_match.group(1) if advisor_match else None
+
+        return fund_name, isin, advisor, registrar
+
+
+    # sometimes text overflows , so depend on the order of text lines as well
+    # format is as follows
+    # Folio No:XX      PAN:XX      KYC:OK PAN:OK
+    # USER_ACCOUNT_NAME
+    # FUND_NAME: YYYYY YYY YYY YYY           Registrar: UUUU
+    # FUND_NAME_CONTINUED (optional)
+    # Nominee 1:
     def extract_text(self, doc_txt):
         # Defining RegEx patterns
-        folio_pat = re.compile(
-            r"(^Folio No:\s\d+)", flags=re.IGNORECASE)  # Extracting Folio information
-        fund_name = re.compile(r".*[Fund].*ISIN.*", flags=re.IGNORECASE)
+        folio_pat = re.compile(r"^Folio No:\s*\d+ / \d+", flags=re.IGNORECASE)
+        fund_name_pat = re.compile(r".*Fund.*ISIN.*", flags=re.IGNORECASE)
+        nominee_search = re.compile(r"^Nominee", flags=re.IGNORECASE)
         trans_details = re.compile(
             r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
         )  # Extracting Transaction data
-
+        line_count_after_folio = 99; # start with high value as we want to init it when we find folio
         line_itms = []
         for i in doc_txt.splitlines():
-            if fund_name.match(i):
-                fun_name = i
+            line_count_after_folio += 1
+            # first check if this is folio line
+            folio_match = folio_pat.search(i)
+            if folio_match:
+                folio = folio_match.group()
+                folio = folio[10:]
+                line_count_after_folio = 0
 
-            if folio_pat.match(i):
-                folio = i
+            fund_match = fund_name_pat.search(i)
+            if fund_match:
+                fund_name_line = i
+                # we will process this only in the next line to see if any more text is seen
+                continue
+
+                # fun_name, isin, advisor, registrar = self.extract_funds_details(i)
+            if line_count_after_folio == 3:
+                # if this line did not contain nominee, that means we are continuing fund name
+                nominee_match = nominee_search.search(i)
+                if nominee_match is None:
+                    fund_name_line += " " + i
+                fun_name, isin, advisor, registrar = self.extract_funds_details(fund_name_line)
 
             txt = trans_details.search(i)
             if txt:
@@ -86,7 +137,7 @@ class WelcomeScreen(QDialog):
                 price = txt.group(5)
                 unit_bal = txt.group(6)
                 line_itms.append(
-                    [folio, fun_name, date, description, amount, units, price, unit_bal]
+                    [folio, fun_name, isin, advisor, registrar, date, description, amount, units, price, unit_bal]
                 )
 
             df = DataFrame(
@@ -94,6 +145,9 @@ class WelcomeScreen(QDialog):
                 columns=[
                     "Folio",
                     "Fund_name",
+                    "ISIN",
+                    "Advisor",
+                    "Registrar",
                     "Date",
                     "Description",
                     "Amount",
