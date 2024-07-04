@@ -1,7 +1,6 @@
+#!/usr/bin/python
+import argparse
 import sys, os
-from PyQt5.uic import loadUi
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog
 import pdfplumber
 import re
 from pandas import DataFrame
@@ -11,13 +10,15 @@ import threading
 basedir = os.path.dirname(__file__)
 
 
-class WelcomeScreen(QDialog):
+class WelcomeScreen():
     def __init__(self):
-        super(WelcomeScreen, self).__init__()
-        loadUi(os.path.join(basedir,"welcome.ui"), self)
-        self.btn_browse.clicked.connect(self.file_dailog)
-        self.chk_password.toggled.connect(self.enable_pw_input)
-        self.btn_submit.clicked.connect(self.process_thread)
+        # init cli 
+        print("CAMS 2 CSV CLI version")
+        # super(WelcomeScreen, self).__init__()
+        # loadUi(os.path.join(basedir,"welcome.ui"), self)
+        # self.btn_browse.clicked.connect(self.file_dailog)
+        # self.chk_password.toggled.connect(self.enable_pw_input)
+        # self.btn_submit.clicked.connect(self.process_thread)
 
 
     def file_dailog(self):
@@ -141,14 +142,29 @@ class WelcomeScreen(QDialog):
 
 
 # Main
-app = QApplication(sys.argv)
-widget = WelcomeScreen()
-widget.setWindowTitle(" ")
-widget.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "icons", "app_icon.svg")))
-widget.show()
+# app = QApplication(sys.argv)
+# widget = WelcomeScreen()
+# widget.setWindowTitle(" ")
+# widget.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "icons", "app_icon.svg")))
+# widget.show()
 
-try:
-    sys.exit(app.exec_())
+# try:
+#     sys.exit(app.exec_())
 
-except:
-    print("exiting")
+# except:
+#     print("exiting")
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+                    prog='Cams2CSV cli',
+                    description='Converts CAMS pdf to CSV format')
+    parser.add_argument('filename', help="Name of input PDF file")
+    return parser.parse_args()
+
+def main():
+    print("Init")
+    args = parse_args()
+    print(args.filename)
+
+if __name__ == "__main__":
+    main()
