@@ -61,9 +61,13 @@ class WelcomeScreen(QDialog):
             self.lbl_message.setText("Please select your CAMS PDF file..")
 
 
+    def cleanup_fund_name(self, text):
+        text = re.sub(r'Non-Demat', '', text)
+        return text
+
     def extract_funds_details(self, text):
         # Regex patterns to extract the required details
-        fund_name_pat = re.compile(r'^(.*?) - ISIN')
+        fund_name_pat = re.compile(r'^(.*?)\s*-\s*ISIN')
         isin_pat = re.compile(r'ISIN:\s*(\w+)')
         advisor_pat = re.compile(r'Advisor:\s*(\w+)')
         registrar_pat = re.compile(r'Registrar :\s*(\w+)')
@@ -75,8 +79,15 @@ class WelcomeScreen(QDialog):
         text = re.sub(r' Registrar :\s*(\w+)\s*', '', text)
         # Extract fund name
         fund_name_match = fund_name_pat.search(text)
-        fund_name = fund_name_match.group()[:-7] if fund_name_match else None
-
+        fund_name = None
+        if fund_name_match:
+            fund_name = fund_name_match.group()
+            fund_name = re.sub(r'-\s*ISIN', '', fund_name) # remove the -ISIN at end of the line
+            fund_name = re.sub(r'\(\s*Non-Demat\s*\)', '', fund_name) # remove the non-demat message
+            fund_name = re.sub(r'\(formerly.*\)', '', fund_name) # remove older names for the fund
+            fund_name = re.sub(r'\(erstwhile.*\)', '', fund_name) # remove older names for the fund
+            fund_name = re.sub(r'^.*?-', '', fund_name) # remove the 4-5 letter code for the fund at start of fund name
+        # fund_name = cleanup_fund_name(fund_name)
         # Extract ISIN
         isin_match = isin_pat.search(text)
         isin = isin_match.group(1) if isin_match else None
@@ -119,6 +130,9 @@ class WelcomeScreen(QDialog):
                 fund_name_line = i
                 # we will process this only in the next line to see if any more text is seen
                 continue
+            elif line_count_after_folio == 2:
+                fund_name_line = i
+                continue
 
                 # fun_name, isin, advisor, registrar = self.extract_funds_details(i)
             if line_count_after_folio == 3:
@@ -137,23 +151,23 @@ class WelcomeScreen(QDialog):
                 price = txt.group(5)
                 unit_bal = txt.group(6)
                 line_itms.append(
-                    [folio, fun_name, isin, advisor, registrar, date, description, amount, units, price, unit_bal]
+                    [fun_name, folio, date, units, price, unit_bal,amount, description, isin, advisor, registrar]
                 )
 
             df = DataFrame(
                 line_itms,
                 columns=[
-                    "Folio",
                     "Fund_name",
-                    "ISIN",
-                    "Advisor",
-                    "Registrar",
+                    "Folio",
                     "Date",
-                    "Description",
-                    "Amount",
                     "Units",
                     "Price",
                     "Unit_balance",
+                    "Amount",
+                    "Description",
+                    "ISIN",
+                    "Advisor",
+                    "Registrar",
                 ],
             )
             self.clean_txt(df.Amount)
