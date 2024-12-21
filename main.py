@@ -10,7 +10,6 @@ import threading
 
 basedir = os.path.dirname(__file__)
 
-
 class WelcomeScreen(QDialog):
     def __init__(self):
         super(WelcomeScreen, self).__init__()

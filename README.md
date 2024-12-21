@@ -1,5 +1,5 @@
 # Cams2csv
-A simple piece of software that will extract CAMS Mutual fund (India) PDF statement data on to a CSV file.
+A simple piece of software that will extract CAMS Mutual fund (India) PDF statement data on to a simple CSV file.
 
 I’ve built this tool for my own personal use so lot of love and passion involved.  It's a fully Open Source project and comes with GPL3 License. I have no intention of collecting your data, I respect your privacy as much as mine.
 
@@ -9,6 +9,10 @@ At this stage, I’m supporting both Windows & Linux and the packages can be dow
 
 - [Windows 10/11](https://github.com/SudheerNotes/cams2csv/releases/download/v1.2/Cams2CSV_v1.2_Windows10.11.zip)
 - [Ubuntu 22.4 and Its derivatives](https://github.com/SudheerNotes/cams2csv/releases/download/v1.2/Cams2CSV_Ubuntu_22.04_v1.2.deb)
+
+
+**Please note, this is a simple software hence I'm not accepting any PR's so if any issues please raise an issue I'll try to fix as soon as I can**
+
 
 ## How to use
 
