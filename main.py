@@ -60,21 +60,22 @@ class WelcomeScreen(QDialog):
             self.lbl_message.setText("Please select your CAMS PDF file..")
 
     def extract_text(self, doc_txt):
+
         # Defining RegEx patterns
-        folio_pat = re.compile(
-            r"(^Folio No:\s\d+)", flags=re.IGNORECASE)  # Extracting Folio information
-        fund_name = re.compile(r".*[Fund].*ISIN.*", flags=re.IGNORECASE)
-        trans_details = re.compile(
-            r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
-        )  # Extracting Transaction data
+        folio_pat = re.compile(r"(^Folio No:\s\d+)(?:\s.*)", flags=re.IGNORECASE)  # Extracting Folio information
+        fund_name = re.compile(r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE) # Extracting Fund Name
+        trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)")  # Extracting Transaction data
 
         line_itms = []
         for i in doc_txt.splitlines():
-            if fund_name.match(i):
-                fun_name = i
 
-            if folio_pat.match(i):
-                folio = i
+            fund_chk = fund_name.match(i)
+            if fund_chk:    
+                fun_name = fund_chk.group(0)
+
+            folio_chk = folio_pat.match(i)
+            if folio_chk:
+                folio = folio_chk.group(1)
 
             txt = trans_details.search(i)
             if txt:
@@ -99,8 +100,7 @@ class WelcomeScreen(QDialog):
                     "Units",
                     "Price",
                     "Unit_balance",
-                ],
-            )
+                ])
             self.clean_txt(df.Amount)
             self.clean_txt(df.Units)
             self.clean_txt(df.Price)
@@ -114,14 +114,10 @@ class WelcomeScreen(QDialog):
             file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
             save_file = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
 
-            try:
-                df.to_csv(save_file, index=False)
-                self.lbl_message.setText(
-                    "Process completed, file saved in Downloads folder"
-                )
-
-            except Exception as e:
-                self.lbl_message.setText(e)
+            os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
+            df.to_csv(save_file, index=False)
+            self.lbl_message.setText("Process completed, file saved in your Downloads folder")
+                
 
     def clean_txt(self, x):
         x.replace(r",", "", regex=True, inplace=True)
