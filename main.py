@@ -1,12 +1,13 @@
 import sys, os
-from PyQt5.uic import loadUi
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog
+from PyQt6.uic import loadUi
+from PyQt6 import QtGui
+from PyQt6.QtWidgets import QDialog, QApplication, QFileDialog
 import pdfplumber
 import re
 from pandas import DataFrame
 from datetime import datetime
 import threading
+
 
 basedir = os.path.dirname(__file__)
 
@@ -15,29 +16,18 @@ class WelcomeScreen(QDialog):
         super(WelcomeScreen, self).__init__()
         loadUi(os.path.join(basedir,"welcome.ui"), self)
         self.btn_browse.clicked.connect(self.file_dailog)
-        self.chk_password.toggled.connect(self.enable_pw_input)
         self.btn_submit.clicked.connect(self.process_thread)
-
 
     def file_dailog(self):
         self.clear_fields()
+        self.le_pwd.setPlaceholderText("Document Password")
+        self.le_pwd.setEnabled(True)
         filename, _ = QFileDialog.getOpenFileName(
             parent=self,
             caption="Select your CAMS PDF file",
             directory=os.getcwd(),
-            filter="pdf(*.pdf)",
-        )
+            filter="pdf(*.pdf)")
         self.lbl_path.setText(filename)
-
-    def enable_pw_input(self):
-        if self.chk_password.isChecked() == True:
-            self.le_pwd.setEnabled(True)
-            self.le_pwd.setPlaceholderText("Document Password")
-            self.lbl_message.clear()
-        else:
-            self.le_pwd.setEnabled(False)
-            self.le_pwd.setPlaceholderText("")
-            self.le_pwd.clear()
 
     def file_processing(self):
         file_path = self.lbl_path.text()
@@ -51,11 +41,16 @@ class WelcomeScreen(QDialog):
                         txt = pdf.pages[i].extract_text()
                         final_text = final_text + "\n" + txt
                     pdf.close()
+                final_df = self.extract_text(final_text)
+                self.csv_export(final_df)
 
-                self.extract_text(final_text)
-
-            except:
-                self.lbl_message.setText("Encrypted file, please enter your password")
+            except Exception as err_msg:
+                if repr(err_msg) == "PDFPasswordIncorrect()":
+                    self.lbl_message.setText("File is Encrypted, please enter your password")
+                    self.le_pwd.setEnabled(True)
+                    self.le_pwd.setPlaceholderText("Document Password")
+                else:
+                    self.lbl_message.setText(repr(err_msg))
         else:
             self.lbl_message.setText("Please select your CAMS PDF file..")
 
@@ -85,9 +80,7 @@ class WelcomeScreen(QDialog):
                 units = txt.group(4)
                 price = txt.group(5)
                 unit_bal = txt.group(6)
-                line_itms.append(
-                    [folio, fun_name, date, description, amount, units, price, unit_bal]
-                )
+                line_itms.append([folio, fun_name, date, description, amount, units, price, unit_bal])
 
             df = DataFrame(
                 line_itms,
@@ -110,14 +103,14 @@ class WelcomeScreen(QDialog):
             df.Units = df.Units.astype("float")
             df.Price = df.Price.astype("float")
             df.Unit_balance = df.Unit_balance.astype("float")
+        return df 
 
-            file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
-            save_file = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
-
-            os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
-            df.to_csv(save_file, index=False)
-            self.lbl_message.setText("Process completed, file saved in your Downloads folder")
-                
+    def csv_export(self, df):
+        file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
+        save_file = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
+        os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
+        df.to_csv(save_file, index=False)
+        self.lbl_message.setText("Process completed, file saved in your Downloads folder")  
 
     def clean_txt(self, x):
         x.replace(r",", "", regex=True, inplace=True)
@@ -128,22 +121,23 @@ class WelcomeScreen(QDialog):
     def clear_fields(self):
         self.lbl_message.clear()
         self.lbl_path.clear()
-        self.chk_password.setChecked(False)
+        self.le_pwd.clear()
+        self.le_pwd.setPlaceholderText("")
+        self.le_pwd.setEnabled(False)
 
     def process_thread(self):
         self.lbl_message.setText("Processing please wait...")
         threading.Thread(target=self.file_processing).start()
 
-
 # Main
 app = QApplication(sys.argv)
-widget = WelcomeScreen()
-widget.setWindowTitle(" ")
-widget.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "icons", "app_icon.svg")))
-widget.show()
+window = WelcomeScreen()
+window.setWindowTitle(" ")
+window.setWindowIcon(QtGui.QIcon(os.path.join(basedir, "icons", "app_icon.svg")))
+window.show()
 
 try:
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
 except:
     print("exiting")

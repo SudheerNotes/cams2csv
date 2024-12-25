@@ -52,10 +52,10 @@ background-color: #081E55;}
 </string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
+    <enum>QFrame::Shape::StyledPanel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Shadow::Raised</enum>
    </property>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -99,7 +99,7 @@ color: rgb(192, 191, 188);
    <widget class="QPushButton" name="btn_submit">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>160</x>
       <y>260</y>
       <width>141</width>
       <height>41</height>
@@ -127,24 +127,25 @@ background-color: rgb(153, 193, 241);</string>
       <x>240</x>
       <y>350</y>
       <width>351</width>
-      <height>31</height>
+      <height>32</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">font: 300 10pt &quot;Fira Sans&quot;;
-color: rgb(255, 255, 255);</string>
+color: rgb(255, 255, 255);
+background-color:   #081F45;</string>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
    </widget>
    <widget class="QPushButton" name="btn_browse">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>160</x>
       <y>190</y>
       <width>141</width>
       <height>41</height>
@@ -154,7 +155,7 @@ color: rgb(255, 255, 255);</string>
      <cursorShape>PointingHandCursor</cursorShape>
     </property>
     <property name="focusPolicy">
-     <enum>Qt::StrongFocus</enum>
+     <enum>Qt::FocusPolicy::StrongFocus</enum>
     </property>
     <property name="toolTip">
      <string notr="true"/>
@@ -178,32 +179,12 @@ background-color: rgb(153, 193, 241);</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="chk_password">
-    <property name="geometry">
-     <rect>
-      <x>580</x>
-      <y>200</y>
-      <width>101</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">font: 300 12pt &quot;Fira Sans&quot;;
-color: rgb(222, 221, 218);</string>
-    </property>
-    <property name="text">
-     <string>Password ?</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="lbl_path">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>330</x>
       <y>190</y>
-      <width>241</width>
+      <width>271</width>
       <height>41</height>
      </rect>
     </property>
@@ -228,9 +209,9 @@ font: 300 10pt &quot;Fira Sans&quot;;</string>
    <widget class="QLineEdit" name="le_pwd">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>330</x>
       <y>260</y>
-      <width>241</width>
+      <width>271</width>
       <height>41</height>
      </rect>
     </property>
@@ -244,7 +225,7 @@ font: 350 10pt &quot;Fira Sans&quot;;</string>
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignCenter</set>
+     <set>Qt::AlignmentFlag::AlignCenter</set>
     </property>
     <property name="placeholderText">
      <string/>
@@ -253,17 +234,18 @@ font: 350 10pt &quot;Fira Sans&quot;;</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>610</x>
       <y>420</y>
-      <width>151</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: rgb(90, 110, 200);</string>
+     <string notr="true">color: rgb(90, 110, 200);
+font: 300 10pt &quot;Fira Sans&quot;;</string>
     </property>
     <property name="text">
-     <string>- Sudheer Tammini - v1.2</string>
+     <string>- Sudheer Tammini - v1.3</string>
     </property>
    </widget>
   </widget>
