@@ -8,7 +8,6 @@ from pandas import DataFrame
 from datetime import datetime
 import threading
 
-
 basedir = os.path.dirname(__file__)
 
 class WelcomeScreen(QDialog):
@@ -20,14 +19,36 @@ class WelcomeScreen(QDialog):
 
     def file_dailog(self):
         self.clear_fields()
+        filename, _ = QFileDialog.getOpenFileName(
+            parent = self,
+            caption = "Select your CAMS PDF file",
+            directory = os.path.expanduser('~'),
+            filter = "pdf(*.pdf)")
+        self.lbl_path.setText(filename)
+
+    def csv_export(self, df):
+        file_name = f'CAMS_Data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
+        os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
+        save_file_path = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
+        df.to_csv(save_file_path, index=False)
+        self.lbl_message.setText("Process completed, file saved in your Downloads folder")  
+
+    def clean_txt(self, col):
+        col.replace(r",", "", regex=True, inplace=True)
+        col.replace(r"\(", "-", regex=True, inplace=True)
+        col.replace(r"\)", " ", regex=True, inplace=True)
+        return col
+
+    def clear_fields(self):
+        self.lbl_message.clear()
+        self.lbl_path.clear()
+        self.le_pwd.clear()
         self.le_pwd.setPlaceholderText("Document Password")
         self.le_pwd.setEnabled(True)
-        filename, _ = QFileDialog.getOpenFileName(
-            parent=self,
-            caption="Select your CAMS PDF file",
-            directory=os.getcwd(),
-            filter="pdf(*.pdf)")
-        self.lbl_path.setText(filename)
+
+    def process_thread(self):
+        self.lbl_message.setText("Processing please wait...")
+        threading.Thread(target=self.file_processing).start()
 
     def file_processing(self):
         file_path = self.lbl_path.text()
@@ -52,10 +73,9 @@ class WelcomeScreen(QDialog):
                 else:
                     self.lbl_message.setText(repr(err_msg))
         else:
-            self.lbl_message.setText("Please select your CAMS PDF file..")
+            self.lbl_message.setText("Please select your CAMS PDF file...")
 
     def extract_text(self, doc_txt):
-
         # Defining RegEx patterns
         folio_pat = re.compile(r"(^Folio No:\s\d+)(?:\s.*)", flags=re.IGNORECASE)  # Extracting Folio information
         fund_name = re.compile(r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE) # Extracting Fund Name
@@ -84,50 +104,12 @@ class WelcomeScreen(QDialog):
 
             df = DataFrame(
                 line_itms,
-                columns=[
-                    "Folio",
-                    "Fund_name",
-                    "Date",
-                    "Description",
-                    "Amount",
-                    "Units",
-                    "Price",
-                    "Unit_balance",
-                ])
-            self.clean_txt(df.Amount)
-            self.clean_txt(df.Units)
-            self.clean_txt(df.Price)
-            self.clean_txt(df.Unit_balance)
+                columns=["Folio","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
 
-            df.Amount = df.Amount.astype("float")
-            df.Units = df.Units.astype("float")
-            df.Price = df.Price.astype("float")
-            df.Unit_balance = df.Unit_balance.astype("float")
+            for col in ['Amount', 'Units', 'Price', 'Unit_balance']:
+                self.clean_txt(df[col])
+                df[col] = df[col].astype("float")
         return df 
-
-    def csv_export(self, df):
-        file_name = f'CAMS_data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
-        save_file = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
-        os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
-        df.to_csv(save_file, index=False)
-        self.lbl_message.setText("Process completed, file saved in your Downloads folder")  
-
-    def clean_txt(self, x):
-        x.replace(r",", "", regex=True, inplace=True)
-        x.replace(r"\(", "-", regex=True, inplace=True)
-        x.replace(r"\)", " ", regex=True, inplace=True)
-        return x
-
-    def clear_fields(self):
-        self.lbl_message.clear()
-        self.lbl_path.clear()
-        self.le_pwd.clear()
-        self.le_pwd.setPlaceholderText("")
-        self.le_pwd.setEnabled(False)
-
-    def process_thread(self):
-        self.lbl_message.setText("Processing please wait...")
-        threading.Thread(target=self.file_processing).start()
 
 # Main
 app = QApplication(sys.argv)
