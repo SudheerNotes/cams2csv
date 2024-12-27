@@ -27,8 +27,8 @@ class WelcomeScreen(QDialog):
         self.lbl_path.setText(filename)
 
     def csv_export(self, df):
-        file_name = f'CAMS_Data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
         os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
+        file_name = f'CAMS_Data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
         save_file_path = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
         df.to_csv(save_file_path, index=False)
         self.lbl_message.setText("Process completed, file saved in your Downloads folder")  
@@ -102,11 +102,9 @@ class WelcomeScreen(QDialog):
                 unit_bal = txt.group(6)
                 line_itms.append([folio, fun_name, date, description, amount, units, price, unit_bal])
 
-            df = DataFrame(
-                line_itms,
-                columns=["Folio","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
-
-            for col in ['Amount', 'Units', 'Price', 'Unit_balance']:
+            df = DataFrame(line_itms, columns=["Folio","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
+            
+            for col in ["Amount", "Units", "Price", "Unit_balance"]:
                 self.clean_txt(df[col])
                 df[col] = df[col].astype("float")
         return df 
