@@ -7,8 +7,8 @@ No malicious code what’s so ever, the code is hosted on GitHub so you can revi
 
 At this stage, I’m supporting both Windows & Linux and the packages can be downloaded from the below links.
 
-- [Windows 10/11](https://github.com/SudheerNotes/cams2csv/releases/download/v1.2/Cams2CSV_v1.2_Windows10.11.zip)
-- [Ubuntu 22.4 and Its derivatives](https://github.com/SudheerNotes/cams2csv/releases/download/v1.2/Cams2CSV_Ubuntu_22.04_v1.2.deb)
+- [Windows 10/11](https://github.com/SudheerNotes/cams2csv/releases/download/v1.3/Cams2CSV_v1.3_Windows11.zip)
+- [Ubuntu 22.4 and Its derivatives](https://github.com/SudheerNotes/cams2csv/releases/download/v1.3/Cams2CSV_Ubuntu_24.04_v1.3.zip)
 
 
 **Please note, this is a simple software hence I'm not accepting any PR's so if any issues please raise an issue I'll try to fix as soon as I can**
