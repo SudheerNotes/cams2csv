@@ -83,28 +83,28 @@ class WelcomeScreen(QDialog):
         trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)")  # Extracting Transaction data
 
         line_itms = []
-        for i in doc_txt.splitlines():
+        for txt in doc_txt.splitlines():
 
-            fund_chk = fund_name.match(i)
+            fund_chk = fund_name.match(txt)
             if fund_chk:    
                 fun_name = fund_chk.group(0)
 
-            folio_chk = folio_pat.match(i)
+            folio_chk = folio_pat.match(txt)
             if folio_chk:
                 folio = folio_chk.group(1)
             
-            isin_chk = isin_num.match(i)
+            isin_chk = isin_num.match(txt)
             if isin_chk:
                 isin = isin_chk.group(3)
 
-            txt = trans_details.search(i)
-            if txt:
-                date = txt.group(1)
-                description = txt.group(2)
-                amount = txt.group(3)
-                units = txt.group(4)
-                price = txt.group(5)
-                unit_bal = txt.group(6)
+            trn_txt = trans_details.search(txt)
+            if trn_txt:
+                date = trn_txt.group(1)
+                description = trn_txt.group(2)
+                amount = trn_txt.group(3)
+                units = trn_txt.group(4)
+                price = trn_txt.group(5)
+                unit_bal = trn_txt.group(6)
                 line_itms.append([folio, isin, fun_name, date, description, amount, units, price, unit_bal])
 
             df = DataFrame(line_itms, columns=["Folio","ISIN","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
