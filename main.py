@@ -77,8 +77,9 @@ class WelcomeScreen(QDialog):
 
     def extract_text(self, doc_txt):
         # Defining RegEx patterns
-        folio_pat = re.compile(r"(^Folio No:\s\d+)(?:\s.*)", flags=re.IGNORECASE)  # Extracting Folio information
+        folio_pat = re.compile(r"(?:^Folio No:)(\s\d+)(?:\s.*)", flags=re.IGNORECASE)  # Extracting Folio information
         fund_name = re.compile(r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE) # Extracting Fund Name
+        isin_num = re.compile(r"(.*)(ISIN.+?)(.*?)(?:Reg|\()", flags=re.IGNORECASE) # Extracting ISIN Number
         trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)")  # Extracting Transaction data
 
         line_itms = []
@@ -91,6 +92,10 @@ class WelcomeScreen(QDialog):
             folio_chk = folio_pat.match(i)
             if folio_chk:
                 folio = folio_chk.group(1)
+            
+            isin_chk = isin_num.match(i)
+            if isin_chk:
+                isin = isin_chk.group(3)
 
             txt = trans_details.search(i)
             if txt:
@@ -100,9 +105,9 @@ class WelcomeScreen(QDialog):
                 units = txt.group(4)
                 price = txt.group(5)
                 unit_bal = txt.group(6)
-                line_itms.append([folio, fun_name, date, description, amount, units, price, unit_bal])
+                line_itms.append([folio, isin, fun_name, date, description, amount, units, price, unit_bal])
 
-            df = DataFrame(line_itms, columns=["Folio","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
+            df = DataFrame(line_itms, columns=["Folio","ISIN","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
             
             for col in ["Amount", "Units", "Price", "Unit_balance"]:
                 self.clean_txt(df[col])
