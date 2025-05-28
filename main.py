@@ -66,7 +66,7 @@ class WelcomeScreen(QDialog):
                 self.csv_export(final_df)
 
             except Exception as err_msg:
-                if repr(err_msg) == "PDFPasswordIncorrect()":
+                if repr(err_msg) == "PdfminerException(PDFPasswordIncorrect())":
                     self.lbl_message.setText("File is Encrypted, please enter your password")
                     self.le_pwd.setEnabled(True)
                     self.le_pwd.setPlaceholderText("Document Password")
