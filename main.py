@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 from PyQt6.uic import loadUi
 from PyQt6 import QtGui
 from PyQt6.QtWidgets import QDialog, QApplication, QFileDialog
@@ -10,28 +11,32 @@ import threading
 
 basedir = os.path.dirname(__file__)
 
+
 class WelcomeScreen(QDialog):
     def __init__(self):
         super(WelcomeScreen, self).__init__()
-        loadUi(os.path.join(basedir,"welcome.ui"), self)
+        loadUi(os.path.join(basedir, "welcome.ui"), self)
         self.btn_browse.clicked.connect(self.file_dailog)
         self.btn_submit.clicked.connect(self.process_thread)
 
     def file_dailog(self):
         self.clear_fields()
         filename, _ = QFileDialog.getOpenFileName(
-            parent = self,
-            caption = "Select your CAMS PDF file",
-            directory = os.path.expanduser('~'),
-            filter = "pdf(*.pdf)")
+            parent=self,
+            caption="Select your CAMS PDF file",
+            directory=os.path.expanduser("~"),
+            filter="pdf(*.pdf)",
+        )
         self.lbl_path.setText(filename)
 
     def csv_export(self, df):
         os.makedirs(os.path.join(os.path.expanduser("~"), "Downloads"), exist_ok=True)
-        file_name = f'CAMS_Data_{datetime.now().strftime("%d_%m_%Y_%H_%M")}.csv'
+        file_name = f"CAMS_Data_{datetime.now().strftime('%d_%m_%Y_%H_%M')}.csv"
         save_file_path = os.path.join(os.path.expanduser("~"), "Downloads", file_name)
         df.to_csv(save_file_path, index=False)
-        self.lbl_message.setText("Process completed, file saved in your Downloads folder")  
+        self.lbl_message.setText(
+            "Process completed, file saved in your Downloads folder"
+        )
 
     def clean_txt(self, col):
         col.replace(r",", "", regex=True, inplace=True)
@@ -67,7 +72,9 @@ class WelcomeScreen(QDialog):
 
             except Exception as err_msg:
                 if repr(err_msg) == "PdfminerException(PDFPasswordIncorrect())":
-                    self.lbl_message.setText("File is Encrypted, please enter your password")
+                    self.lbl_message.setText(
+                        "File is Encrypted, please enter your password"
+                    )
                     self.le_pwd.setEnabled(True)
                     self.le_pwd.setPlaceholderText("Document Password")
                 else:
@@ -77,22 +84,29 @@ class WelcomeScreen(QDialog):
 
     def extract_text(self, doc_txt):
         # Defining RegEx patterns
-        folio_pat = re.compile(r"(?:^Folio No:)(\s\d+)(?:\s.*)", flags=re.IGNORECASE)  # Extracting Folio information
-        fund_name = re.compile(r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE) # Extracting Fund Name
-        isin_num = re.compile(r"(.*)(ISIN.+?)(.*?)(?:Reg|\()", flags=re.IGNORECASE) # Extracting ISIN Number
-        trans_details = re.compile(r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)")  # Extracting Transaction data
+        folio_pat = re.compile(
+            r"(?:^Folio No:)(\s\d+)(?:\s.*)", flags=re.IGNORECASE
+        )  # Extracting Folio information
+        fund_name = re.compile(
+            r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE
+        )  # Extracting Fund Name
+        isin_num = re.compile(
+            r"(.*)(ISIN.+?)(.*?)(?:Reg|\()", flags=re.IGNORECASE
+        )  # Extracting ISIN Number
+        trans_details = re.compile(
+            r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
+        )  # Extracting Transaction data
 
         line_itms = []
         for txt in doc_txt.splitlines():
-
             fund_chk = fund_name.match(txt)
-            if fund_chk:    
+            if fund_chk:
                 fun_name = fund_chk.group(0)
 
             folio_chk = folio_pat.match(txt)
             if folio_chk:
                 folio = folio_chk.group(1)
-            
+
             isin_chk = isin_num.match(txt)
             if isin_chk:
                 isin = isin_chk.group(3)
@@ -105,14 +119,40 @@ class WelcomeScreen(QDialog):
                 units = trn_txt.group(4)
                 price = trn_txt.group(5)
                 unit_bal = trn_txt.group(6)
-                line_itms.append([folio, isin, fun_name, date, description, amount, units, price, unit_bal])
+                line_itms.append(
+                    [
+                        folio,
+                        isin,
+                        fun_name,
+                        date,
+                        description,
+                        amount,
+                        units,
+                        price,
+                        unit_bal,
+                    ]
+                )
 
-            df = DataFrame(line_itms, columns=["Folio","ISIN","Fund_name","Date","Description","Amount","Units","Price","Unit_balance"])
-            
+            df = DataFrame(
+                line_itms,
+                columns=[
+                    "Folio",
+                    "ISIN",
+                    "Fund_name",
+                    "Date",
+                    "Description",
+                    "Amount",
+                    "Units",
+                    "Price",
+                    "Unit_balance",
+                ],
+            )
+
             for col in ["Amount", "Units", "Price", "Unit_balance"]:
                 self.clean_txt(df[col])
                 df[col] = df[col].astype("float")
-        return df 
+        return df
+
 
 # Main
 app = QApplication(sys.argv)
