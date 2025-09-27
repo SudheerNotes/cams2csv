@@ -94,7 +94,7 @@ class WelcomeScreen(QDialog):
             r"(.*)(ISIN.+?)(.*?)(?:Reg|\()", flags=re.IGNORECASE
         )  # Extracting ISIN Number
         trans_details = re.compile(
-            r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,.]\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
+            r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,\d.]+\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
         )  # Extracting Transaction data
 
         line_itms = []
