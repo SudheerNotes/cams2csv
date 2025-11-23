@@ -1,13 +1,14 @@
-import sys
 import os
-from PyQt6.uic import loadUi
-from PyQt6 import QtGui
-from PyQt6.QtWidgets import QDialog, QApplication, QFileDialog
-import pdfplumber
 import re
-from pandas import DataFrame
-from datetime import datetime
+import sys
 import threading
+from datetime import datetime
+
+import pdfplumber
+from pandas import DataFrame
+from PyQt6 import QtGui
+from PyQt6.QtWidgets import QApplication, QDialog, QFileDialog
+from PyQt6.uic import loadUi
 
 basedir = os.path.dirname(__file__)
 
@@ -67,6 +68,8 @@ class WelcomeScreen(QDialog):
                         txt = pdf.pages[i].extract_text()
                         final_text = final_text + "\n" + txt
                     pdf.close()
+                    # Converting text to list format
+                    final_text = final_text.splitlines()
                 final_df = self.extract_text(final_text)
                 self.csv_export(final_df)
 
@@ -79,38 +82,60 @@ class WelcomeScreen(QDialog):
                     self.le_pwd.setPlaceholderText("Document Password")
                 else:
                     self.lbl_message.setText(repr(err_msg))
+                    print(repr(err_msg))
         else:
             self.lbl_message.setText("Please select your CAMS PDF file...")
 
     def extract_text(self, doc_txt):
         # Defining RegEx patterns
-        folio_pat = re.compile(
-            r"(?:^Folio No:)(\s\d+)(?:\s.*)", flags=re.IGNORECASE
-        )  # Extracting Folio information
+        # Extracting Fund Name
         fund_name = re.compile(
-            r"^([a-z0-9]{3,}+)-(.*?FUND)", flags=re.IGNORECASE
-        )  # Extracting Fund Name
-        isin_num = re.compile(
-            r"(.*)(ISIN.+?)(.*?)(?:Reg|\()", flags=re.IGNORECASE
-        )  # Extracting ISIN Number
+            r"^([a-z0-9]{3,}+)-(.*?FUND.+)(\s\-\sISIN)", flags=re.IGNORECASE
+        )
+
+        # Extracting ISIN Number
+        isin_num = re.compile(r"ISIN:\s*(\w+)", re.IGNORECASE)
+
+        # Extracting Folio information
+        folio_pat = re.compile(r"Folio No:\s*(\d+)", flags=re.IGNORECASE)
+
+        # Extracting PAN information
+        pan_pat = re.compile(r"PAN:\s*(\w{10})", flags=re.IGNORECASE)
+
+        # Extracting Transaction data
         trans_details = re.compile(
             r"(^\d{2}-\w{3}-\d{4})(\s.+?\s(?=[\d(]))([\d\(]+[,\d.]+\d+[.\d\)]+)(\s[\d\(\,\.\)]+)(\s[\d\,\.]+)(\s[\d,\.]+)"
-        )  # Extracting Transaction data
+        )
 
         line_itms = []
-        for txt in doc_txt.splitlines():
+        for idx, txt in enumerate(doc_txt):
+            # Grab mutual fund name
             fund_chk = fund_name.match(txt)
             if fund_chk:
-                fun_name = fund_chk.group(0)
+                fnd_name = fund_chk.group(2)
 
-            folio_chk = folio_pat.match(txt)
+            # Grab Mutual fund ISIN number with index method
+            isin_chk = isin_num.search(txt)
+            if isin_chk:
+                if len(isin_chk.group(1)) != 12:
+                    next_match = re.match(r"^\w+", doc_txt[idx + 1])
+                    isin = str(isin_chk.group(1)) + str(next_match.group(0))
+                else:
+                    isin = str(isin_chk.group(1))
+
+            # Grab folio number & Investor name using folio pattern with index method
+            folio_chk = folio_pat.search(txt)
             if folio_chk:
                 folio = folio_chk.group(1)
+                # Identiry current index position add 1 to grab the investor name from next line
+                investor_name = doc_txt[idx + 1].title()
 
-            isin_chk = isin_num.match(txt)
-            if isin_chk:
-                isin = isin_chk.group(3)
+            # Grab Investor PAN number
+            pan_check = pan_pat.search(txt)
+            if pan_check:
+                pan_num = pan_check.group(1)
 
+            # Grab Mutual transaction details
             trn_txt = trans_details.search(txt)
             if trn_txt:
                 date = trn_txt.group(1)
@@ -121,34 +146,38 @@ class WelcomeScreen(QDialog):
                 unit_bal = trn_txt.group(6)
                 line_itms.append(
                     [
+                        investor_name,
+                        pan_num,
                         folio,
                         isin,
-                        fun_name,
+                        fnd_name,
                         date,
                         description,
                         amount,
                         units,
                         price,
                         unit_bal,
-                    ]
+                    ],
                 )
 
             df = DataFrame(
                 line_itms,
                 columns=[
+                    "Investor_Name",
+                    "PAN_Number",
                     "Folio",
                     "ISIN",
-                    "Fund_name",
+                    "Fund_Name",
                     "Date",
                     "Description",
                     "Amount",
                     "Units",
                     "Price",
-                    "Unit_balance",
+                    "Unit_Balance",
                 ],
             )
 
-            for col in ["Amount", "Units", "Price", "Unit_balance"]:
+            for col in ["Amount", "Units", "Price", "Unit_Balance"]:
                 self.clean_txt(df[col])
                 df[col] = df[col].astype("float")
         return df
