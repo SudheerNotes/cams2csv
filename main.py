@@ -82,7 +82,7 @@ class WelcomeScreen(QDialog):
                     self.le_pwd.setPlaceholderText("Document Password")
                 else:
                     self.lbl_message.setText(repr(err_msg))
-                    print(repr(err_msg))
+                    # print(repr(err_msg))
         else:
             self.lbl_message.setText("Please select your CAMS PDF file...")
 
@@ -127,7 +127,7 @@ class WelcomeScreen(QDialog):
             folio_chk = folio_pat.search(txt)
             if folio_chk:
                 folio = folio_chk.group(1)
-                # Identiry current index position add 1 to grab the investor name from next line
+                # Identify current index position & add 1 to grab investor name from the next line
                 investor_name = doc_txt[idx + 1].title()
 
             # Grab Investor PAN number
